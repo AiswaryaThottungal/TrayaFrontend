@@ -14,7 +14,7 @@ const Login = () => {
          setAuthUser,
          isLoggedIn,
          setIsLoggedIn,
-         
+         userLogin
      } = useAuth();
 
    // const { loginState, setLoginState } = useAuth();
@@ -46,10 +46,11 @@ const Login = () => {
 
         if (Object.keys(validationErrors).length === 0) {
             try {
-                const response = await axios.post(LOGIN_URL, formData);
+                //const response = await axios.post(LOGIN_URL, formData);
                 
                 //document.getElementById("login-form").reset();
-                const userData = await response.data;
+                const response = await userLogin(formData);
+                const userData = response.data;
                 const accessToken = userData.token;
                 console.log(accessToken)
                
@@ -77,7 +78,7 @@ const Login = () => {
                 navigate('/');
             }
             catch (error) {
-                console.log(error?.response?.data?.message)
+                console.log(error.response)
                 toast.error(error?.response?.data?.message)
             }
 

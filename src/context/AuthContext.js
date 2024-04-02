@@ -36,6 +36,19 @@ const userInitialState = {
     const cookies= new Cookies();
 
     //login user
+    const userLogin = async(userCredentials) => {
+        console.log(userCredentials)
+        const loginUrl = userAPI+'login';
+        try{
+            const response = await axios.post(loginUrl, userCredentials);
+            console.log(response.data)
+            return response;
+        }catch(error){
+            return error.response;
+        }
+    }
+
+    //logout user
     const userLogout = async() => {
             try{
                const response = await axios.get(userAPI + "logout");
@@ -197,6 +210,7 @@ const userInitialState = {
         setAuthUser,
         isLoggedIn,
         setIsLoggedIn,
+        userLogin,
         userLogout,
         createAddress,
         saveAddress,
