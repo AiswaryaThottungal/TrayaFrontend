@@ -50,32 +50,40 @@ const Login = () => {
                 
                 //document.getElementById("login-form").reset();
                 const response = await userLogin(formData);
-                const userData = response.data;
-                const accessToken = userData.token;
-                console.log(accessToken)
-               
-                const cookies= new Cookies();
-                cookies.set("accessToken", accessToken);
-                toast.success("User Logged In");
-                const newUser = {
-                    userId: userData._id,
-                    firstName: userData.firstname,
-                    lastName: userData.firstname,
-                    email: userData.email,
-                    address:  userData.address,
-                    wishlist:  userData.wishlist
+                if (response.status === 400) {
+                    toast.error("Invalid Credentials! Please try again.")
+                    //throw new Error("Invalid Credentials")
                 }
-                setAuthUser(newUser);
-               
-                setIsLoggedIn(true);  
-                 
-            
-                // get user cart from DB
-                let cart = await getUserCart();
-                console.log("Get User Cart")
-                console.log(cart);
-                 
-                navigate('/');
+                else {
+                    const userData = response.data;
+                    const accessToken = userData.token;
+                    console.log(accessToken)
+                    console.log(response);
+                    const cookies = new Cookies();
+                    cookies.set("accessToken", accessToken);
+                    toast.success("User Logged In");
+                    const newUser = {
+                        userId: userData._id,
+                        firstName: userData.firstname,
+                        lastName: userData.firstname,
+                        email: userData.email,
+                        address: userData.address,
+                        wishlist: userData.wishlist
+                    }
+                    setAuthUser(newUser);
+
+                    setIsLoggedIn(true);
+
+
+                    // get user cart from DB
+                    let cart = await getUserCart();
+                    console.log("Get User Cart")
+                    console.log(cart);
+
+                    navigate('/');
+
+                }
+
             }
             catch (error) {
                 console.log(error.response)
