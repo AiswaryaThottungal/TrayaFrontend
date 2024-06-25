@@ -1,17 +1,44 @@
 import React from 'react';
 import { useCartContext } from './context/CartContext';
+import {useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import CartItem from './components/CartItem';
+import { useAuth } from './context/AuthContext';
 import { Button } from './styles/Button';
 import { NavLink } from 'react-router-dom';
 import FormatPrice from './helpers/FormatPrice';
+import { toast, Toaster } from 'react-hot-toast';
 
 const Cart = () => {
-  const { cart, clearCart, total_amount } = useCartContext();
-  //const totalPrice = cart.cartTotal;
-  console.log("🚀 ~ file: Cart.js:6 ~ Cart ~ cart:", cart);
-  console.log(total_amount)
-  debugger;
+  const { cart, clearCart, total_amount } = useCartContext();  
+  const { authUser,isLoggedIn} = useAuth();
+
+  const navigate = useNavigate();  
+  
+  const Msg = ({closeToast}) => (
+    <ToastWrapper>
+      Please log in before checking out!
+      <br />
+      <br />
+      <div className='toast-btn-container'> 
+        <button onClick={()=> {navigate('/login')}}> Login</button>
+        <button onClick={()=>{toast.dismiss()}}> Close</button>
+      </div>      
+      
+    </ToastWrapper>
+  )
+
+  const handleCheckoutRedirect= (e) => {
+    console.log(authUser);
+    console.log(isLoggedIn)
+    if(!authUser || !isLoggedIn){
+      toast (<Msg />, {duration: 10000});            
+    }else{
+      alert("Logged In");
+      navigate('/checkout')
+    }
+}
+
   if (cart.length === 0) {
     return (
       <EmptyDiv>
@@ -80,16 +107,46 @@ const Cart = () => {
 
         </div> */}
         <div className='cart-buttons'>
-        <NavLink to='/checkout'>
-          <Button>Check Out</Button>
-          </NavLink>
-        </div>
+        <Button onClick={handleCheckoutRedirect}>Check Out</Button>
         
+        </div>
+        <Toaster 
+          containerStyle={{
+            top: 100,
+            left: 50
+          }}
+         toastOptions={{
+                        style: {
+                          
+                            border: '1px solid black',
+                            fontSize: '20px',
+                            padding: '10px',                            
+                            color: '#C43823'
+                        }
+                    }} />
 
       </div>
     </Wrapper>
   )
 }
+
+const ToastWrapper = styled.div`
+
+
+  .toast-btn-container{
+    display:flex;
+    justify-content:center;
+
+    button{
+      margin:8px;
+      padding:5px;
+      background: ${({ theme }) => theme.colors.subtle};
+      color: ${({ theme }) => theme.colors.highlighter};
+      border:none;
+      border-radius:5px;
+    }
+  }
+`;
 
 
 const EmptyDiv = styled.div`
