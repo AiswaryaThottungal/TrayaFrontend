@@ -21,7 +21,7 @@ const Cart = () => {
       <br />
       <br />
       <div className='toast-btn-container'> 
-        <button onClick={()=> {navigate('/login')}}> Login</button>
+       <button onClick={()=> {toast.dismiss();navigate('/login')}}> Login</button>
         <button onClick={()=>{toast.dismiss()}}> Close</button>
       </div>      
       
